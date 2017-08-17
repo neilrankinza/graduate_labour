@@ -116,26 +116,76 @@ summary(reg4_4)
 
 #********************************************************************************
   
-######################Up to here
+# Let's look at the returns to education a bit more
+reg5_1 <- lm(lrearn ~ bigfirm + male + age + agesq + educ + educsq + as.factor(wave)+ as.factor(locdum) + as.factor(sector), data=g_data)
+summary(reg5_1)
 
-* Let's look at the returns to education a bit more
-xi: reg lrearn bigfirm male age agesq educ educsq i.wave i.locdum i.sector
+# Now look within firms
 
-* Now look within firms
+#with R we need to load another package 'plm' to be able to do panel data regressions simply
+library(plm)
+# see the vignette http://r.adu.org.za/web/packages/plm/vignettes/plm.pdf
+
+#plm is used for a 'standard' panel - in this case individuals over time, rather than firms.
+# rather we'll use a 'work around'.
+
+
+# Least squares dummy variable - within firms
+reg5_2 <- lm(lrearn ~ bigfirm + male + age + agesq + educ + educsq + as.factor(wave)+ as.factor(locdum) + as.factor(sector) + as.factor(firm), data=g_data)
+summary(reg5_2)
+
+
+# Is there a difference in returns to education between big and small firms
+reg5_3 <- lm(lrearn ~ bigfirm*educ + bigfirm*educsq + male + age + agesq  + as.factor(wave) + as.factor(locdum), data=g_data)
+summary(reg5_3)
+
+# Now control for sector
+reg5_4 <- lm(lrearn ~ bigfirm*educ + bigfirm*educsq + male + age + agesq  + as.factor(wave) + as.factor(locdum) + as.factor(sector), data=g_data)
+summary(reg5_4)
+
+# What do these curves look like?
+# What can we conclude from the estimates with and without the sector controls
+
+# What happens when you run a within/fixed-effects estimation?
+# What is identifying the coefficients
+reg5_5 <- lm(lrearn ~ bigfirm*educ + bigfirm*educsq + male + age + agesq  + as.factor(wave) + as.factor(firm), data=g_data)
+summary(reg5_5)
+
+###################################
+# Making a nice table
+library(stargazer)
+stargazer(reg5_1, reg5_2, reg5_3, reg5_4, reg5_5, style = 'qje', type = 'text',  
+          title            = "Big firms and earnings"
+          )
+
+
+
+
+
+
+
+
+# panel with plm
+reg5_3 <- plm(lrearn ~ bigfirm + male + age + agesq + educ + educsq + as.factor(wave)+ as.factor(locdum) + as.factor(sector), data=g_data, index=c("firm", "wave"), model="within")
+summary(reg5_3)
+
+panel_dataset <- select(ghana_firms_workers, n_wid, wavef, locdum, male:ocdum)
+
+
+
+est_fe <- plm(lrearn ~ male + age + agesq + educ + educsq, data=g_data, model = "within")
+
+summary(est_fe)
+
+
+g_data_panel <- pdata.frame(g_data, index=c("firm","wave"), drop.index=TRUE, row.names=TRUE)
+
+
+
 xtset firm
 xi: xtreg lrearn bigfirm male age agesq educ educsq i.wave i.locdum, fe
 * What does this mean?
 
-* Is there a difference in returns to education between big and small firms
-xi: reg lrearn i.bigfirm*educ i.bigfirm*educsq male age agesq  i.wave i.locdum
-* Now control for sector
-xi: reg lrearn i.bigfirm*educ i.bigfirm*educsq male age agesq  i.wave i.locdum i.sector
-* What do these curves look like?
-* What can we conclude from the estimates with and without the sector controls
-
-* What happens when you run a within/fixed-effects estimation?
-* What is identifying the coefficients
-xi: xtreg lrearn i.bigfirm*educ i.bigfirm*educsq male age agesq  i.wave i.locdum, fe
 
 
 
@@ -162,13 +212,7 @@ library(plm)
 #to use this, one way to tell the package the cross-sectional and time compnents is to put them in the first two columns
 ghana_firms_workers$wavef <- factor(ghana_firms_workers$wave) #need to do this so R does not treat it like a linear trend
 
-panel_dataset <- select(ghana_firms_workers, n_wid, wavef, locdum, male:ocdum)
 
-
-
-est_fe <- plm(lrearn ~ male + age + agesq + educ + educsq, data=panel_dataset, model = "within")
-
-summary(est_fe)
 
 
 reg1 <- lm(lrearn ~ male + age + agesq + educ + educsq + wavef + locdum, data=ghana_firms_workers)
