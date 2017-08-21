@@ -1,4 +1,6 @@
-# METADATA ----
+
+#removing duplicates
+ghan# METADATA ----
 # Description: Ghana worker-firm data tutorial, Stellenbosch Graduate Labour Economics
 # Creator: Neil Rankin
 # Created: 2015-08-01
@@ -24,9 +26,7 @@ options(digits=3)
 # LOAD DATA & WRANGLE ----
 
 ghana_firms_workers <- read.dta("firm_size_and_wages/firms_workers/firms_workers.dta")
-
-#removing duplicates
-ghana_firms_workers <- ghana_firms_workers[!duplicated(ghana_firms_workers[c("wid", "firm", "wave", "age")]), ]
+a_firms_workers <- ghana_firms_workers[!duplicated(ghana_firms_workers[c("wid", "firm", "wave", "age")]), ]
 
 
 #Do we need unique IDs? Can use mutate to do it
