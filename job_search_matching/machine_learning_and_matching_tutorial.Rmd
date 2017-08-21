@@ -5,8 +5,11 @@ date: "August 21, 2017"
 output: beamer_presentation
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+library(dplyr)
+library(ggplot2)
+library(stargazer)
 ```
 
 ## Goal
@@ -81,13 +84,60 @@ Split the data into a training and testing dataset
 ## ML algorithm, step 1 (R)
 
 
-```{r}
+```{r load_data}
+
+ej_data <- readRDS("data/ej_data.rds")
+
+ej_data$employed <- ifelse(ej_data$working=="Yes", TRUE,
+                           ifelse(ej_data$working=="No", FALSE, NA))
 
 
-## Slide with R Output
+```
 
-```{r cars, echo = TRUE}
-summary(cars)
+```{r split_training_test, echo=TRUE}
+### split out training and test data
+set.seed(1234)
+## Using 70% as training currently
+
+# check dimensions of data
+dim(ej_data) 
+
+#Sample Indexes
+indexes = sample(1:nrow(ej_data), size=0.3*nrow(ej_data))
+
+# Split data and just checking dimensions
+ej_test = ej_data[indexes,]
+dim(ej_test)
+
+ej_train = ej_data[-indexes,]
+dim(ej_train)
+
+#look at proportions of yellow jobs
+table(ej_data$employed)
+table(ej_train$employed)
+table(ej_test$employed)
+```
+
+
+## Training the model
+
+```{r training_OLS, results='asis'}
+#Need stargazer here
+
+model1.1 <- lm(employed ~ english_mark + as.numeric(CFT_answer_ODS), ej_train)
+
+stargazer(model1.1)
+
+
+```
+
+## Testing the model (and a picture)
+
+```{r test_OLS, warning=FALSE}
+ej_test$predicted_model1.1 <- predict(model1.1, newdata = ej_test)
+
+ggplot(ej_test, aes(x=predicted_model1.1, fill=employed)) + geom_density(position = "identity", alpha=0.4) + scale_fill_manual(values=c("dark green", "yellow"))
+
 ```
 
 ## Slide with Plot
