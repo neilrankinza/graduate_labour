@@ -5,6 +5,12 @@ date: August 2017
 autosize: true
 
 
+Goal
+========================================================
+
+- Can we build a 'machine learning' algorithm to identify young people who are likely to become employed in South Africa?
+
+
 Outline
 ========================================================
 
@@ -19,10 +25,32 @@ Outline
 What is machine learning (ML)?
 =======================================================
 
+'Machine learning is the subfield of computer science that, according to Arthur Samuel, gives "computers the ability to learn without being explicitly programmed"... Evolved from the study of pattern recognition and computational learning theory in artificial intelligence, machine learning explores the study and construction of algorithms that can learn from and make predictions on data – such algorithms overcome following strictly static program instructions by making data-driven predictions or decisions, through building a model from sample inputs. Machine learning is employed in a range of computing tasks where designing and programming explicit algorithms with good performance is difficult or infeasible; example applications include email filtering, detection of network intruders or malicious insiders working towards a data breach, optical character recognition (OCR), learning to rank, and computer vision.'
+
+[Wikipedia](https://en.wikipedia.org/wiki/Machine_learning)
 
 Applying this in a South African labour market environment
 =======================================================
 
+(**Harambee Youth Employment Accelerator**)[http://harambee.co.za/harambee/] is an organisation which brings together young people, who are marginalised in the labour market, and employers looking for entry-level recruits.
+
+Their reputation depends on finding good, but overlooked, candidates. They need a mechanism to find these candidates? Can we help?
+
+
+The Harambee process
+=======================================================
+
+1. 'Source' people either through actively recruiting or through sign-ups trhough a mobile site
+2. Invite people to further assessments and support:
+
+    + 'Work-seeker support' which includes interview preparation, help with job search etc
+    + 'Learning Potential' or CFT. A non-verbal reasoning test.
+    + Numeracy test (a number of different variants, not all candidates get this)
+    + Communications test (not all candidates get this)
+3. 'Bridge' with job-specific skills
+4. Facilitate placement (for those going through the whole process), or self-placement (who find a job after work-seeker support)
+
+Can we find characteristics which can help to pick candidates to go through this process?
 
 Building a prototype ML algorithm (for employment)
 =======================================================
@@ -32,7 +60,8 @@ Steps:
  1. Split the dataset between training and testing
  2. Train a model on the training data
     + OLS
-    + Logit
+    + Logit (?)
+    + Random forest (?)
  3. Evaluate it on the test data
  
 See the do file, R script
@@ -104,5 +133,3 @@ summary(cars)
 
 Slide With Plot
 ========================================================
-
-![plot of chunk unnamed-chunk-3](machine_learning_and_matching-figure/unnamed-chunk-3-1.png)

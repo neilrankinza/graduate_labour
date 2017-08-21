@@ -78,7 +78,9 @@ Split the data into a training and testing dataset
 ## ML algorithm, step 1 (STATA)
 
 `set seed 12345` 
+
 `ssc install randomtag` 
+
 `randomtag` 
 
 ## ML algorithm, step 1 (R)
@@ -121,12 +123,12 @@ table(ej_test$employed)
 
 ## Training the model
 
-```{r training_OLS, results='asis'}
+```{r training_OLS, results='asis', warning=FALSE, message=FALSE, resize.height=0.5,resize.width=0.5}
 #Need stargazer here
 
 model1.1 <- lm(employed ~ english_mark + as.numeric(CFT_answer_ODS), ej_train)
 
-stargazer(model1.1)
+stargazer(model1.1, header = FALSE)
 
 
 ```
@@ -140,9 +142,6 @@ ggplot(ej_test, aes(x=predicted_model1.1, fill=employed)) + geom_density(positio
 
 ```
 
-## Slide with Plot
+## Improve the model?
 
-```{r pressure}
-plot(pressure)
-```
-
+Can you improve the predictive ability of the model?
