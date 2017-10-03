@@ -93,6 +93,16 @@ ej_data <- readRDS("data/ej_data.rds")
 ej_data$employed <- ifelse(ej_data$working=="Yes", TRUE,
                            ifelse(ej_data$working=="No", FALSE, NA))
 
+ej_data$did_maths <- ifelse(!is.na(ej_data$maths_mark), TRUE, FALSE)
+ej_data$no_maths_data <- ifelse((is.na(ej_data$maths_mark)&is.na(ej_data$maths_lit_mark)), TRUE, FALSE)
+
+ej_data$english_sq <- ej_data$english_mark^2
+
+ej_data$maths_mark_0 <- ifelse(is.na(ej_data$maths_mark), 0, as.numeric(ej_data$maths_mark))
+ej_data$maths_mark_0_sq <- ej_data$maths_mark_0^2
+
+ej_data$cft <- as.numeric(ej_data$CFT_answer_ODS)
+
 
 ```
 
@@ -128,7 +138,24 @@ table(ej_test$employed)
 
 model1.1 <- lm(employed ~ english_mark + as.numeric(CFT_answer_ODS), ej_train)
 
-stargazer(model1.1, header = FALSE)
+
+
+
+
+model1.2 <- lm(employed ~ english_mark + did_maths + as.numeric(CFT_answer_ODS), ej_train)
+summary(model1.2)
+stargazer(model1.1, model1.2, header = FALSE)
+
+model1.3 <- lm(employed ~ english_mark + did_maths + as.numeric(CFT_answer_ODS) + no_maths_data, ej_train)
+summary(model1.3)
+
+
+model1.4 <- lm(employed ~ english_mark + english_sq + did_maths*maths_mark_0 + CFT_answer_ODS + no_maths_data, ej_train)
+summary(model1.4)
+
+model1.5 <- lm(employed ~ english_mark + english_sq + did_maths*maths_mark_0 + did_maths*maths_mark_0_sq + CFT_answer_ODS + no_maths_data, ej_train)
+summary(model1.5)
+
 
 
 ```
@@ -137,8 +164,10 @@ stargazer(model1.1, header = FALSE)
 
 ```{r test_OLS, warning=FALSE}
 ej_test$predicted_model1.1 <- predict(model1.1, newdata = ej_test)
+ej_test$predicted_model1.2 <- predict(model1.2, newdata = ej_test)
+ej_test$predicted_model1.5 <- predict(model1.5, newdata = ej_test)
 
-ggplot(ej_test, aes(x=predicted_model1.1, fill=employed)) + geom_density(position = "identity", alpha=0.4) + scale_fill_manual(values=c("dark green", "yellow"))
+ggplot(ej_test, aes(x=predicted_model1.5, fill=employed)) + geom_density(position = "identity", alpha=0.4) + scale_fill_manual(values=c("dark green", "yellow"))
 
 ```
 
